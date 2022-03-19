@@ -190,7 +190,7 @@ class SwipeLayoutManager(
         isPreLayout: Boolean = false,
         remeasureStack: Boolean = false,
     ) {
-        if (itemCount == 0 || (stackTopPos >= itemCount)) return
+        if (itemCount == 0 || (stackTopPos !in 0 until itemCount)) return
 
         if (isPreLayout) {
             for (viewPos in (viewCache.size - 1) downTo 0) {
@@ -212,9 +212,11 @@ class SwipeLayoutManager(
                 }
             }
 
-            if (viewCache.isNotEmpty() && recycler.scrapList.isNotEmpty()) {
-                val disappearingIndexes = findDisappearingIndexes(recycler.scrapList)
-                layoutDisappearingViews(disappearingIndexes)
+            if (viewCache.isNotEmpty()) {
+                if (recycler.scrapList.isNotEmpty()) {
+                    val disappearingIndexes = findDisappearingIndexes(recycler.scrapList)
+                    layoutDisappearingViews(disappearingIndexes)
+                }
                 viewCache.clear()
             }
         }
@@ -457,12 +459,12 @@ class SwipeLayoutManager(
         get() = this.left + this.width / 2
 
     companion object {
-        private const val MAX_ROTATION_ANGLE = 5f
+        private const val MAX_ROTATION_ANGLE = 12f
         private const val RECOVERY_DURATION = 200L
         private const val SWIPE_ON_EDGE_DURATION = 300L
 
         private const val DEFAULT_SHOWN_ITEMS_COUNT = 5
-        private const val DEFAULT_ELEVATION_STEP = 5f
+        private const val DEFAULT_ELEVATION_STEP = 10f
         private const val DEFAULT_ITEMS_SIZE_RATIO = 0.93f
         private const val DEFAULT_RELATIVE_STACK_HEIGHT = 4 / 12f
         private const val DEFAULT_RELATIVE_SWIPE_THRESHOLD = 1 / 6f
