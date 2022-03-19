@@ -3,9 +3,12 @@ package com.designdrivendevelopment.kotelok.screens.trainers.swipe
 import android.animation.ValueAnimator
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.SparseArray
 import android.view.View
 import androidx.annotation.Px
 import androidx.core.animation.doOnEnd
+import androidx.core.util.isNotEmpty
+import androidx.core.util.size
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import androidx.recyclerview.widget.RecyclerView
@@ -36,9 +39,13 @@ class SwipeLayoutManager(
     private var baseOffset = 0f
 
     private var topView: View? = null
+    private var anchorView: View? = null
 
     private val verticalThresholds: MutableList<Int> = MutableList(shownItemsCount) { 0 }
     private val verticalOffsets: MutableList<Int> = MutableList(shownItemsCount - 1) { 0 }
+
+    private val viewCache = SparseArray<View>()
+    private val saveTopItemOnChanges = false
 
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
         return RecyclerView.LayoutParams(
@@ -49,16 +56,42 @@ class SwipeLayoutManager(
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
         if (recycler == null) return
-        stackTopPos = min(stackTopPos, itemCount - 1)
         rightSwipeThreshold = (width * (1 - relativeSwipeThreshold)).roundToInt()
         leftSwipeThreshold = (width * relativeSwipeThreshold).roundToInt()
 
+        val isPreLayout = state?.isPreLayout == true
+        if (isPreLayout) {
+            for (childPos in childCount - 1 downTo 0) {
+                val view = getChildAt(childPos) ?: continue
+                viewCache.append(childPos, view)
+
+                /*
+                * Поиск якорной view для сохранения местоположения верхнего элемента
+                * при изменениях данных в адаптере
+                */
+                if (saveTopItemOnChanges && anchorView != null) {
+                    testToAnchor(view)
+                }
+            }
+        } else if (viewCache.isNotEmpty() && saveTopItemOnChanges) {
+            stackTopPos = anchorView?.let { getPosition(it) } ?: stackTopPos
+            anchorView = null
+        }
+
+        if (stackTopPos !in 0 until itemCount) {
+            stackTopPos = 0
+        }
+
         detachAndScrapAttachedViews(recycler)
-        fill(recycler, remeasureStack = true)
+        fill(recycler, isPreLayout, remeasureStack = true)
         recycler.clear()
     }
 
     override fun canScrollHorizontally(): Boolean {
+        return true
+    }
+
+    override fun supportsPredictiveItemAnimations(): Boolean {
         return true
     }
 
@@ -83,10 +116,10 @@ class SwipeLayoutManager(
                     onUpdate = { updateViewRotation(view, width / 2) },
                     onEnd = {
                         stackTopPos ++
-                        onSwipeRight.invoke(viewPos)
                         detachAndScrapAttachedViews(recycler)
                         fill(recycler)
                         recycler.clear()
+                        onSwipeRight.invoke(viewPos)
                     }
                 )
                 0
@@ -152,37 +185,37 @@ class SwipeLayoutManager(
         }
     }
 
-    private fun fill(recycler: RecyclerView.Recycler, remeasureStack: Boolean = false) {
+    private fun fill(
+        recycler: RecyclerView.Recycler,
+        isPreLayout: Boolean = false,
+        remeasureStack: Boolean = false,
+    ) {
         if (itemCount == 0 || (stackTopPos >= itemCount)) return
 
-        val visibleViewsCount = min(itemCount - stackTopPos, shownItemsCount)
-        val bottomViewPos = visibleViewsCount - 1 + stackTopPos
+        if (isPreLayout) {
+            for (viewPos in (viewCache.size - 1) downTo 0) {
+                val view = viewCache.get(viewPos)
+                layoutViewOnPos(view, viewPos, viewCache.size - 1, posShift = 0, remeasureStack)
+                updateViewDecor(view)
+            }
+        } else {
+            val visibleViewsCount = min(itemCount - stackTopPos, shownItemsCount)
+            val bottomViewPos = visibleViewsCount - 1 + stackTopPos
 
-        for (viewPos in bottomViewPos downTo stackTopPos) {
+            for (viewPos in bottomViewPos downTo stackTopPos) {
+                val view = recycler.getViewForPosition(viewPos)
+                layoutViewOnPos(view, viewPos, bottomViewPos, posShift = stackTopPos, remeasureStack)
+                updateViewDecor(view)
 
-            val view = recycler.getViewForPosition(viewPos)
-            addView(view)
-            measureChildWithMargins(view, 0, 0)
-
-            if (viewPos == bottomViewPos && remeasureStack) {
-                remeasureStackParams(view.measuredHeight)
+                if (viewPos == stackTopPos) {
+                    topView = view
+                }
             }
 
-            layoutDecorated(
-                view,
-                view.marginStart,
-                verticalThresholds[viewPos - stackTopPos] - view.measuredHeight,
-                width - view.marginEnd,
-                verticalThresholds[viewPos - stackTopPos]
-            )
-
-            view.pivotY = view.height.toFloat()
-            view.pivotX = view.width.toFloat() / 2
-            updateViewScale(view, absoluteStackHeight, stackBottom)
-            updateViewElevation(view, absoluteStackHeight, stackBottom)
-
-            if (viewPos == stackTopPos) {
-                topView = view
+            if (viewCache.isNotEmpty() && recycler.scrapList.isNotEmpty()) {
+                val disappearingIndexes = findDisappearingIndexes(recycler.scrapList)
+                layoutDisappearingViews(disappearingIndexes)
+                viewCache.clear()
             }
         }
     }
@@ -219,6 +252,13 @@ class SwipeLayoutManager(
                 view.rotation = MAX_ROTATION_ANGLE * ratio
             }
         }
+    }
+
+    private fun updateViewDecor(view: View) {
+        view.pivotY = view.height.toFloat()
+        view.pivotX = view.width.toFloat() / 2
+        updateViewScale(view, absoluteStackHeight, stackBottom)
+        updateViewElevation(view, absoluteStackHeight, stackBottom)
     }
 
     private fun View.moveAlongAxis(
@@ -330,6 +370,67 @@ class SwipeLayoutManager(
                 updateViewScale(view, absoluteStackHeight, stackBottom)
                 updateViewElevation(view, absoluteStackHeight, stackBottom)
             }
+        }
+    }
+
+    private fun layoutViewOnPos(
+        view: View,
+        pos: Int,
+        bottomPos: Int,
+        posShift: Int,
+        remeasureStack: Boolean
+    ) {
+        addView(view)
+        measureChildWithMargins(view, 0, 0)
+
+        if (pos == bottomPos && remeasureStack) {
+            remeasureStackParams(view.measuredHeight)
+        }
+
+        layoutDecorated(
+            view,
+            view.marginStart,
+            verticalThresholds[pos - posShift] - view.measuredHeight,
+            width - view.marginEnd,
+            verticalThresholds[pos - posShift]
+        )
+    }
+
+    private fun findDisappearingIndexes(scrapList: List<RecyclerView.ViewHolder?>): List<Int> {
+        val disappearingIndexes = mutableListOf<Int>()
+
+        for (viewHolder in scrapList.iterator()) {
+            if (viewHolder == null) continue
+            val index = viewCache.indexOfValue(viewHolder.itemView)
+            if (index != -1) disappearingIndexes.add(index)
+        }
+        return disappearingIndexes
+    }
+
+    private fun layoutDisappearingViews(disappearingIndexes: List<Int>) {
+        for (index in disappearingIndexes) {
+            val viewPos = viewCache.keyAt(index)
+            val view = viewCache.valueAt(index)
+
+            addDisappearingView(view)
+            measureChildWithMargins(view, 0, 0)
+
+            layoutDecorated(
+                view,
+                width + view.marginStart + view.width,
+                verticalThresholds[viewPos] - view.measuredHeight,
+                width + view.marginStart + view.width + view.width,
+                verticalThresholds[viewPos]
+            )
+
+            updateViewDecor(view)
+        }
+    }
+
+    private fun testToAnchor(view: View) {
+        val lp = view.layoutParams as RecyclerView.LayoutParams
+        if (!lp.isItemRemoved) {
+            anchorView = view
         }
     }
 
