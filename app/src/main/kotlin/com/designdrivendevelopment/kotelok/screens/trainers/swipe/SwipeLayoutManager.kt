@@ -27,7 +27,10 @@ class SwipeLayoutManager(
     private val elevationStep = DEFAULT_ELEVATION_STEP
     private val itemsSizeRatio = DEFAULT_ITEMS_SIZE_RATIO
     private val relativeStackHeight = DEFAULT_RELATIVE_STACK_HEIGHT
+
     private val scales = List(size = shownItemsCount) { index: Int -> itemsSizeRatio.pow(index) }
+    private val endScale = scales.last()
+    private val offsetScalesSum = scales.dropLast(1).sum()
 
     private val relativeSwipeThreshold = DEFAULT_RELATIVE_SWIPE_THRESHOLD
     private var rightSwipeThreshold = 0
@@ -218,8 +221,6 @@ class SwipeLayoutManager(
 
     private fun updateViewScale(view: View, @Px verticalSpace: Int, @Px bottomThreshold: Int) {
         val dy = min(verticalSpace, bottomThreshold - view.bottom)
-
-        val endScale = scales.last()
         val scaleCoefficient = 1 - endScale
 
         val scale: Float = endScale + scaleCoefficient * (dy.toFloat() / verticalSpace.toFloat())
@@ -339,7 +340,7 @@ class SwipeLayoutManager(
     private fun remeasureStackParams(itemHeight: Int) {
         absoluteStackHeight = (((height shr 1) - (itemHeight shr 1)) * relativeStackHeight).roundToInt()
         stackBottom = ((height shr 1) + (itemHeight shr 1) + absoluteStackHeight)
-        baseOffset = absoluteStackHeight / scales.dropLast(1).sum()
+        baseOffset = absoluteStackHeight / offsetScalesSum
 
         verticalThresholds[0] = stackBottom - absoluteStackHeight
         verticalThresholds[shownItemsCount - 1] = stackBottom
