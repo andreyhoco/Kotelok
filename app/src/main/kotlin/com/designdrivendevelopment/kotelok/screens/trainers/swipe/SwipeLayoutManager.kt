@@ -346,10 +346,10 @@ class SwipeLayoutManager(
         verticalThresholds[shownItemsCount - 1] = stackBottom
         for (i in (shownItemsCount - 2) downTo 1) {
             val offset = (baseOffset * scales[i]).roundToInt()
-            verticalOffsets[shownItemsCount - 2 - i] = offset
+            verticalOffsets[i] = offset
             verticalThresholds[i] = verticalThresholds[i + 1] - offset
         }
-        verticalOffsets[shownItemsCount - 2] = verticalThresholds[1] - verticalThresholds[0]
+        verticalOffsets[0] = verticalThresholds[1] - verticalThresholds[0]
     }
 
     private fun moveStackItemsToPercent(percent: Float) {
@@ -359,7 +359,8 @@ class SwipeLayoutManager(
                 val newCoordinate = if (percent >= 1f) {
                     verticalThresholds[childCount - 2 - childPos]
                 } else {
-                    verticalThresholds[childCount - 1 - childPos] - (verticalOffsets[childPos] * percent).roundToInt()
+                    verticalThresholds[childCount - 1 - childPos] -
+                        (verticalOffsets[childCount - 2 - childPos] * percent).roundToInt()
                 }
 
                 val offset = newCoordinate - view.bottom
