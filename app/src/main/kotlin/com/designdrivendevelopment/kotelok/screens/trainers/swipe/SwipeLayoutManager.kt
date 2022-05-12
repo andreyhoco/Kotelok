@@ -20,7 +20,8 @@ class SwipeLayoutManager(
     private val onSwipeLeft: (pos: Int) -> Unit,
     private val onSwipeRight: (pos: Int) -> Unit
 ) : RecyclerView.LayoutManager() {
-    private var stackTopPos = 0
+    var stackTopPos = 0
+        private set
 
     private val shownItemsCount = DEFAULT_SHOWN_ITEMS_COUNT
     private val elevationStep = DEFAULT_ELEVATION_STEP
@@ -76,10 +77,6 @@ class SwipeLayoutManager(
             anchorView = null
         }
 
-        if (stackTopPos !in 0 until itemCount) {
-            stackTopPos = 0
-        }
-
         detachAndScrapAttachedViews(recycler)
         fill(recycler, isPreLayout, remeasureStack = true)
         recycler.clear()
@@ -91,6 +88,11 @@ class SwipeLayoutManager(
 
     override fun supportsPredictiveItemAnimations(): Boolean {
         return true
+    }
+
+    override fun scrollToPosition(position: Int) {
+        stackTopPos = position
+        requestLayout()
     }
 
     override fun scrollHorizontallyBy(dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
