@@ -1,8 +1,6 @@
 package com.designdrivendevelopment.kotelok.screens.trainers.swipe
 
 import android.animation.ValueAnimator
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.SparseArray
 import android.view.View
 import androidx.annotation.Px
@@ -174,14 +172,6 @@ class SwipeLayoutManager(
                     }
                 )
             }
-        }
-    }
-
-    override fun onSaveInstanceState(): Parcelable = SavedState(stackTopPos)
-
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        if (state is SavedState) {
-            stackTopPos = state.stackTopPos
         }
     }
 
@@ -433,25 +423,6 @@ class SwipeLayoutManager(
         val lp = view.layoutParams as RecyclerView.LayoutParams
         if (!lp.isItemRemoved) {
             anchorView = view
-        }
-    }
-
-    private class SavedState(val stackTopPos: Int) : Parcelable {
-        constructor(parcel: Parcel) : this(parcel.readInt())
-
-        override fun writeToParcel(parcel: Parcel?, flags: Int) {
-            parcel?.writeInt(stackTopPos)
-        }
-
-        override fun describeContents(): Int = 0
-
-        companion object {
-            @JvmField
-            val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
-                override fun createFromParcel(parcel: Parcel): SavedState = SavedState(parcel)
-
-                override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
-            }
         }
     }
 
