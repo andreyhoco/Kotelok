@@ -99,6 +99,7 @@ class SwipeLayoutManager(
         val view = topView
         if (view == null || recycler == null) return 0
 
+        val origin = width shr 1
         return when {
             (dx < 0) && ((view.centerX - dx) > rightSwipeThreshold) -> {
                 topView = null
@@ -106,14 +107,14 @@ class SwipeLayoutManager(
                 val viewPos = getPosition(view)
                 val delta = max(rightSwipeThreshold - view.centerX, 0)
                 if (delta != 0) {
-                    scrollStackItemsVertically(width / 2, view.centerX, delta)
+                    scrollStackItemsVertically(origin, view.centerX, delta)
                 }
 
                 view.moveAlongAxis(
                     startPos = view.left,
                     endPos = view.left + view.width,
                     SWIPE_ON_EDGE_DURATION,
-                    onUpdate = { updateViewRotation(view, width / 2) },
+                    onUpdate = { updateViewRotation(view, origin) },
                     onEnd = {
                         stackTopPos ++
                         detachAndScrapAttachedViews(recycler)
@@ -131,14 +132,14 @@ class SwipeLayoutManager(
                 val viewPos = getPosition(view)
                 val delta = - max(view.centerX - leftSwipeThreshold, 0)
                 if (delta != 0) {
-                    scrollStackItemsVertically(width / 2, view.centerX, delta)
+                    scrollStackItemsVertically(origin, view.centerX, delta)
                 }
 
                 view.moveAlongAxis(
                     startPos = view.left,
                     endPos = view.left - view.width,
                     SWIPE_ON_EDGE_DURATION,
-                    onUpdate = { updateViewRotation(view, width / 2) },
+                    onUpdate = { updateViewRotation(view, origin) },
                     onEnd = {
                         stackTopPos ++
                         onSwipeLeft.invoke(viewPos)
@@ -151,8 +152,8 @@ class SwipeLayoutManager(
             }
             else -> {
                 view.offsetLeftAndRight(-dx)
-                updateViewRotation(view, width / 2)
-                scrollStackItemsVertically(width / 2, view.centerX, -dx)
+                updateViewRotation(view, origin)
+                scrollStackItemsVertically(origin, view.centerX, -dx)
                 dx
             }
         }
@@ -161,6 +162,7 @@ class SwipeLayoutManager(
     override fun onScrollStateChanged(state: Int) {
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
             val view = topView ?: return
+            val origin = width shr 1
 
             if ((view.centerX <= rightSwipeThreshold) && (view.centerX >= leftSwipeThreshold)) {
                 view.moveAlongAxis(
@@ -169,8 +171,8 @@ class SwipeLayoutManager(
                     RECOVERY_DURATION,
                     onUpdate = { step ->
                         val delta = - step
-                        scrollStackItemsVertically(width / 2, view.centerX, delta)
-                        updateViewRotation(view, width / 2)
+                        scrollStackItemsVertically(origin, view.centerX, delta)
+                        updateViewRotation(view, origin)
                     }
                 )
             }
@@ -335,8 +337,8 @@ class SwipeLayoutManager(
     }
 
     private fun remeasureStackParams(itemHeight: Int) {
-        absoluteStackHeight = ((height / 2 - itemHeight / 2) * relativeStackHeight).roundToInt()
-        stackBottom = (height / 2 + itemHeight / 2 + absoluteStackHeight)
+        absoluteStackHeight = (((height shr 1) - (itemHeight shr 1)) * relativeStackHeight).roundToInt()
+        stackBottom = ((height shr 1) + (itemHeight shr 1) + absoluteStackHeight)
         baseOffset = absoluteStackHeight / scales.dropLast(1).sum()
 
         verticalThresholds[0] = stackBottom - absoluteStackHeight
@@ -429,7 +431,7 @@ class SwipeLayoutManager(
     }
 
     private val View.centerX: Int
-        get() = this.left + this.width / 2
+        get() = this.left + (this.width shr 1)
 
     companion object {
         private const val MAX_ROTATION_ANGLE = 12f
