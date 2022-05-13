@@ -49,6 +49,8 @@ class SwipeLayoutManager(
     private val viewCache = SparseArray<View>()
     private val saveTopItemOnChanges = false
 
+    private val appearanceAnimators = mutableListOf<ValueAnimator>()
+
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
         return RecyclerView.LayoutParams(
             RecyclerView.LayoutParams.MATCH_PARENT,
@@ -187,6 +189,9 @@ class SwipeLayoutManager(
         isPreLayout: Boolean = false,
         remeasureStack: Boolean = false,
     ) {
+        appearanceAnimators.forEach { it.end() }
+        appearanceAnimators.clear()
+
         if (itemCount == 0 || (stackTopPos !in 0 until itemCount)) return
 
         if (isPreLayout) {
@@ -203,6 +208,19 @@ class SwipeLayoutManager(
                 val view = recycler.getViewForPosition(viewPos)
                 layoutViewOnPos(view, viewPos, bottomViewPos, posShift = stackTopPos, remeasureStack)
                 updateViewDecor(view)
+
+                /*
+                * (viewPos == bottomViewPos) - view нижняя в "стопке"
+                * (visibleViewsCount == shownItemsCount) - "стопка" имеет макс. размер, т. о.
+                * появляется новая нижняя view, а не имеет мест оперемещение старой view снизу вверх
+                * (viewPos != (shownItemsCount - 1)) - определяет, что lm не находится в начальном состоянии
+                */
+                if ((viewPos == bottomViewPos) &&
+                    (visibleViewsCount == shownItemsCount) &&
+                    (viewPos != (shownItemsCount - 1))
+                ) {
+                    appearanceAnimators.add(startViewAppearance(view, APPEARANCE_DURATION))
+                }
 
                 if (viewPos == stackTopPos) {
                     topView = view
@@ -276,6 +294,16 @@ class SwipeLayoutManager(
             }
             doOnEnd { onEnd?.invoke() }
         }.start()
+    }
+
+    private fun startViewAppearance(view: View, appearanceDuration: Long): ValueAnimator {
+        return ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = appearanceDuration
+            addUpdateListener { animator ->
+                view.alpha = animator.animatedValue as Float
+            }
+            start()
+        }
     }
 
     private fun scrollStackItemsVertically(@Px origin: Int, @Px startPos: Int, @Px delta: Int) {
@@ -439,6 +467,7 @@ class SwipeLayoutManager(
         private const val MAX_ROTATION_ANGLE = 12f
         private const val RECOVERY_DURATION = 200L
         private const val SWIPE_ON_EDGE_DURATION = 300L
+        private const val APPEARANCE_DURATION = 800L
 
         private const val DEFAULT_SHOWN_ITEMS_COUNT = 5
         private const val DEFAULT_ELEVATION_STEP = 10f
