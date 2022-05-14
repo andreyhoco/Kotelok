@@ -18,21 +18,34 @@ import kotlin.math.roundToInt
 @Suppress("TooManyFunctions")
 class SwipeLayoutManager(
     private val onSwipeLeft: (pos: Int) -> Unit,
-    private val onSwipeRight: (pos: Int) -> Unit
+    private val onSwipeRight: (pos: Int) -> Unit,
+    private var shownItemsCount: Int = DEFAULT_SHOWN_ITEMS_COUNT,
+    private var itemsSizeRatio: Float = DEFAULT_ITEMS_SIZE_RATIO,
 ) : RecyclerView.LayoutManager() {
+    private constructor(config: Config) :
+        this(
+            config.onSwipeLeft,
+            config.onSwipeRight,
+            config.shownItemsCount,
+            config.itemsSizeRatio
+        ) {
+            elevationStep = config.elevationStep
+            relativeStackHeight = config.relativeStackHeight
+            relativeSwipeThreshold = config.relativeSwipeThreshold
+            saveTopItemOnChanges = config.saveTopOnItemChanges
+        }
+
     var stackTopPos = 0
         private set
 
-    private val shownItemsCount = DEFAULT_SHOWN_ITEMS_COUNT
-    private val elevationStep = DEFAULT_ELEVATION_STEP
-    private val itemsSizeRatio = DEFAULT_ITEMS_SIZE_RATIO
-    private val relativeStackHeight = DEFAULT_RELATIVE_STACK_HEIGHT
-
+    private var elevationStep = DEFAULT_ELEVATION_STEP
     private val scales = List(size = shownItemsCount) { index: Int -> itemsSizeRatio.pow(index) }
+
     private val endScale = scales.last()
     private val offsetScalesSum = scales.dropLast(1).sum()
 
-    private val relativeSwipeThreshold = DEFAULT_RELATIVE_SWIPE_THRESHOLD
+    private var relativeStackHeight = DEFAULT_RELATIVE_STACK_HEIGHT
+    private var relativeSwipeThreshold = DEFAULT_RELATIVE_SWIPE_THRESHOLD
     private var rightSwipeThreshold = 0
     private var leftSwipeThreshold = 0
 
@@ -47,7 +60,7 @@ class SwipeLayoutManager(
     private val verticalOffsets: MutableList<Int> = MutableList(shownItemsCount - 1) { 0 }
 
     private val viewCache = SparseArray<View>()
-    private val saveTopItemOnChanges = false
+    private var saveTopItemOnChanges = false
 
     private val appearanceAnimators = mutableListOf<ValueAnimator>()
 
@@ -463,6 +476,62 @@ class SwipeLayoutManager(
     private val View.centerX: Int
         get() = this.left + (this.width shr 1)
 
+    class Config {
+        var shownItemsCount = DEFAULT_SHOWN_ITEMS_COUNT
+            private set
+        var itemsSizeRatio = DEFAULT_ITEMS_SIZE_RATIO
+            private set
+        var elevationStep = DEFAULT_ELEVATION_STEP
+            private set
+        var relativeStackHeight = DEFAULT_RELATIVE_STACK_HEIGHT
+            private set
+        var relativeSwipeThreshold = DEFAULT_RELATIVE_SWIPE_THRESHOLD
+            private set
+        var saveTopOnItemChanges = false
+            private set
+        var onSwipeLeft: (pos: Int) -> Unit = {}
+            private set
+        var onSwipeRight: (pos: Int) -> Unit = {}
+            private set
+
+        fun setShowItemsCount(itemsCount: Int) {
+            shownItemsCount = itemsCount
+        }
+
+        fun setItemsSizeRatio(ratio: Float) {
+            if (ratio !in 0f..1f) throw IllegalArgumentException("Ratio must be in the range 0..1")
+            itemsSizeRatio = ratio
+        }
+
+        fun setElevationStep(step: Float) {
+            elevationStep = step
+        }
+
+        fun setRelativeStackHeight(relativeHeight: Float) {
+            if (relativeHeight !in 0f..1f)
+                throw IllegalArgumentException("Relative height must be in the range 0..1")
+            relativeStackHeight = relativeHeight
+        }
+
+        fun setRelativeSwipeThreshold(relativeThreshold: Float) {
+            if (relativeThreshold !in 0f..1f)
+                throw IllegalArgumentException("Relative threshold must be in the range 0..1")
+            relativeSwipeThreshold = relativeThreshold
+        }
+
+        fun saveTopOnItemChanges(save: Boolean) {
+            saveTopOnItemChanges = save
+        }
+
+        fun doOnSwipeLeft(action: (pos: Int) -> Unit) {
+            onSwipeLeft = action
+        }
+
+        fun doOnSwipeRight(action: (pos: Int) -> Unit) {
+            onSwipeRight = action
+        }
+    }
+
     companion object {
         private const val MAX_ROTATION_ANGLE = 12f
         private const val RECOVERY_DURATION = 200L
@@ -474,5 +543,11 @@ class SwipeLayoutManager(
         private const val DEFAULT_ITEMS_SIZE_RATIO = 0.93f
         private const val DEFAULT_RELATIVE_STACK_HEIGHT = 4 / 12f
         private const val DEFAULT_RELATIVE_SWIPE_THRESHOLD = 1 / 6f
+
+        fun build(init: Config.() -> Unit): SwipeLayoutManager {
+            val config = Config()
+            config.init()
+            return SwipeLayoutManager(config)
+        }
     }
 }
