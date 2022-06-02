@@ -96,4 +96,10 @@
     <string name="text_negative_answer_button_description">Кнопка отрицательного ответа</string>
     <string name="text_positive_answer_button_description">Кнопка положительного ответа</string>
     <string name="text_to_dictionaries_button">К словарям</string>
+    <string name="text_score_report">Отчет</string>
+    <string name="name_trainer_cards">Карточки</string>
+    <string name="header_trainer_end">Конец</string>
+    <string name="answer_right_word"><b>Верно</b>\nОтвет: %1$s</string>
+    <string name="answer_wrong_word"><b>Неверно</b>\nОтвет: %1$s</string>
+    <string name="error_empty_writing">Вы должны ввести слово</string>
 </resources>
