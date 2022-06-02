@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="12dp"
+    android:elevation="@dimen/default_elevation"
     android:background="@drawable/category_header_background" >
 
     <TextView
@@ -15,8 +15,7 @@
         android:paddingHorizontal="16dp"
         android:gravity="center"
         android:textSize="@dimen/title_size"
-        android:textAllCaps="true"
-        android:textColor="?attr/colorPrimaryBackground"
+        android:textColor="?attr/colorPrimary"
         tools:text="Загруженные слова"
         />
 </FrameLayout>
