@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/dictionary_tab"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_book"
+        app:itemIconTint="?attr/paleColor"
         android:title="@string/dictionaries_ru" />
     <item
         android:id="@+id/recognition_tab"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_camera"
+        app:itemIconTint="?attr/colorAccent"
         android:title="@string/recognize_ru" />
     <item
         android:id="@+id/profile_tab"
         android:enabled="true"
         android:icon="@drawable/ic_chart"
+        app:itemIconTint="?attr/paleColor"
         android:title="@string/statistics_ru" />
 </menu>
