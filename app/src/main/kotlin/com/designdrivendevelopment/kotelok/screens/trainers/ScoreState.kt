@@ -12,9 +12,7 @@ sealed class ScoreState {
 
         fun getScoreText(right: Int, wrong: Int): String {
             return if (right == 0 && wrong == 0) TEXT_ALREADY_COMPLETED
-            else "Правильных ответов - ${
-                ((right / (wrong + right)).toFloat() * FLOAT_TO_PERCENT_MULT).roundToInt()
-            }%"
+            else "Правильных ответов - ${((right / (wrong + right)).toFloat() * FLOAT_TO_PERCENT_MULT).roundToInt()}%"
         }
     }
 }
