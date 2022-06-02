@@ -23,8 +23,8 @@ import com.designdrivendevelopment.kotelok.screens.dictionaries.lookupWordDefini
 import com.designdrivendevelopment.kotelok.screens.recognize.RecognizedTextBottomSheet
 import com.designdrivendevelopment.kotelok.screens.recognize.RecognizedWordsFragment
 import com.designdrivendevelopment.kotelok.screens.screensUtils.FragmentResult
-import com.designdrivendevelopment.kotelok.screens.trainers.TrainFlashcardsFragment
-import com.designdrivendevelopment.kotelok.screens.trainers.TrainWriteFragment
+import com.designdrivendevelopment.kotelok.screens.trainers.cards.TrainFlashcardsFragment
+import com.designdrivendevelopment.kotelok.screens.trainers.writer.TrainWriteFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @Suppress("TooManyFunctions")

@@ -1,44 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:background="@color/light_gray_background_main"
-    tools:context=".screens.trainers.TrainWriteFragment">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/top_border"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="12dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/bottom_border"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="12dp" />
+    tools:context=".screens.trainers.writer.TrainWriteFragment"
+    android:baselineAligned="false">
 
     <LinearLayout
         android:id="@+id/flashcard"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:padding="12dp"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="16dp"
+        android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical"
-        android:elevation="12dp"
-        android:background="@drawable/shape_flashcard_background"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintHorizontal_weight="3"
-        app:layout_constraintTop_toTopOf="@id/top_border"
-        app:layout_constraintBottom_toBottomOf="@id/bottom_border"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/input_word"
-        app:layout_constraintHorizontal_bias="0" >
+        android:elevation="@dimen/default_elevation"
+        android:background="@drawable/shape_flashcard_background_without_border" >
 
         <TextView
             android:id="@+id/word_writing_ru"
@@ -58,116 +41,75 @@
             tools:text="Нет слов"/>
     </LinearLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_word"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="12dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintHorizontal_weight="2"
-        app:hintAnimationEnabled="false"
-        app:layout_constraintStart_toEndOf="@id/flashcard"
-        app:layout_constraintTop_toTopOf="@id/flashcard"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical">
 
-
-        <com.google.android.material.textfield.TextInputEditText
+        <LinearLayout
+            android:id="@+id/input_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_word"
-            android:maxLines="1"
-            android:inputType="textVisiblePassword"  />
+            android:layout_marginVertical="16dp"
+            android:orientation="vertical"
+            android:elevation="@dimen/default_elevation"
+            android:background="@drawable/shape_elevated_background">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:hintAnimationEnabled="false" >
 
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_word"
+                    android:maxLines="1"
+                    android:inputType="textVisiblePassword"  />
 
-    <Button
-        android:id="@+id/next_word_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:text="@string/next_word"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:strokeColor="?attr/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/correct_word"
-        app:layout_constraintEnd_toEndOf="@id/input_word"
-        app:layout_constraintStart_toStartOf="@id/input_word"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/correct_word"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:text="@string/default_word"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="@dimen/title_size"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="@id/input_word"
-        app:layout_constraintTop_toBottomOf="@+id/input_word"
-        app:layout_constraintEnd_toEndOf="@id/input_word" />
+            <Button
+                android:id="@+id/check_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="@dimen/medium_corner_radius"
+                android:minHeight="0dp"
+                android:paddingVertical="4dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="@string/check_button_text" />
 
-    <TextView
-        android:id="@+id/text_completed"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="24dp"
-        android:gravity="center"
-        android:visibility="invisible"
-        android:text="@string/dict_completed"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="@dimen/title_size"
-        android:textStyle="italic"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <Button
+                android:id="@+id/next_word_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="@dimen/medium_corner_radius"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="@string/next_word"
+                android:visibility="gone"
+                android:textSize="@dimen/subheading_size" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/check_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:text="@string/check_button_text"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:strokeColor="?attr/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@+id/correct_word"
-        app:layout_constraintEnd_toEndOf="@+id/input_word"
-        app:layout_constraintStart_toStartOf="@+id/input_word" />
+        <TextView
+            android:id="@+id/text_check_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="@drawable/shape_elevated_background"
+            android:elevation="@dimen/default_elevation"
+            android:visibility="invisible"
+            android:gravity="center"
+            tools:visibility="visible"
+            tools:text="Верно\nОтвет: 11111"
+            android:textSize="@dimen/subheading_size" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/repeat_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:visibility="invisible"
-        android:text="@string/repeat_train"
-        tools:visibility="visible"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:strokeColor="?attr/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/to_dictionaries_button"
-        app:layout_constraintTop_toBottomOf="@id/text_completed" />
-
-    <Button
-        android:id="@+id/to_dictionaries_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:visibility="invisible"
-        android:text="@string/text_to_dictionaries_button"
-        tools:visibility="visible"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:strokeColor="?attr/colorPrimary"
-        app:layout_constraintEnd_toStartOf="@id/repeat_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_completed" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
