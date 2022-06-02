@@ -33,6 +33,7 @@ class SwipeLayoutManager(
             relativeStackHeight = config.relativeStackHeight
             relativeSwipeThreshold = config.relativeSwipeThreshold
             saveTopItemOnChanges = config.saveTopOnItemChanges
+            pivotYType = config.pivotY
         }
 
     var stackTopPos = 0
@@ -52,6 +53,7 @@ class SwipeLayoutManager(
     private var absoluteStackHeight = 0
     private var stackBottom = 0
     private var baseOffset = 0f
+    private var pivotYType = Config.Pivot.BOTTOM
 
     private var topView: View? = null
     private var anchorView: View? = null
@@ -86,7 +88,7 @@ class SwipeLayoutManager(
                 * Поиск якорной view для сохранения местоположения верхнего элемента
                 * при изменениях данных в адаптере
                 */
-                if (saveTopItemOnChanges && anchorView != null) {
+                if (saveTopItemOnChanges && (anchorView == null)) {
                     testToAnchor(view)
                 }
             }
@@ -97,7 +99,7 @@ class SwipeLayoutManager(
 
         detachAndScrapAttachedViews(recycler)
         fill(recycler, isPreLayout, remeasureStack = true)
-        recycler.clear()
+        if (!isPreLayout) recycler.clear()
     }
 
     override fun canScrollHorizontally(): Boolean {
@@ -283,7 +285,11 @@ class SwipeLayoutManager(
     }
 
     private fun updateViewDecor(view: View) {
-        view.pivotY = view.height.toFloat()
+        view.pivotY = when (pivotYType) {
+            Config.Pivot.BOTTOM -> view.height.toFloat()
+            Config.Pivot.CENTER -> (view.height.toFloat() / 2)
+            else -> 0f
+        }
         view.pivotX = view.width.toFloat() / 2
         updateViewScale(view, absoluteStackHeight, stackBottom)
         updateViewElevation(view, absoluteStackHeight, stackBottom)
@@ -477,6 +483,12 @@ class SwipeLayoutManager(
         get() = this.left + (this.width shr 1)
 
     class Config {
+        enum class Pivot {
+            TOP,
+            CENTER,
+            BOTTOM
+        }
+
         var shownItemsCount = DEFAULT_SHOWN_ITEMS_COUNT
             private set
         var itemsSizeRatio = DEFAULT_ITEMS_SIZE_RATIO
@@ -492,6 +504,8 @@ class SwipeLayoutManager(
         var onSwipeLeft: (pos: Int) -> Unit = {}
             private set
         var onSwipeRight: (pos: Int) -> Unit = {}
+            private set
+        var pivotY: Pivot = Pivot.BOTTOM
             private set
 
         fun setShowItemsCount(itemsCount: Int) {
@@ -529,6 +543,10 @@ class SwipeLayoutManager(
 
         fun doOnSwipeRight(action: (pos: Int) -> Unit) {
             onSwipeRight = action
+        }
+
+        fun setPivotYType(pivotType: Pivot) {
+            pivotY = pivotType
         }
     }
 
