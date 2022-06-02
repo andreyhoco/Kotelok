@@ -86,7 +86,7 @@ class SwipeLayoutManager(
                 * Поиск якорной view для сохранения местоположения верхнего элемента
                 * при изменениях данных в адаптере
                 */
-                if (saveTopItemOnChanges && anchorView != null) {
+                if (saveTopItemOnChanges && (anchorView == null)) {
                     testToAnchor(view)
                 }
             }
@@ -97,7 +97,7 @@ class SwipeLayoutManager(
 
         detachAndScrapAttachedViews(recycler)
         fill(recycler, isPreLayout, remeasureStack = true)
-        recycler.clear()
+        if (!isPreLayout) recycler.clear()
     }
 
     override fun canScrollHorizontally(): Boolean {
