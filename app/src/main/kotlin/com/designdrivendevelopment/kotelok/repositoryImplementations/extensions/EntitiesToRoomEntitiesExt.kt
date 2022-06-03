@@ -35,7 +35,8 @@ fun WordDefinition.toWordDefinitionEntity(): WordDefinitionEntity {
         pairsNextRepeatDate = with(Calendar.getInstance()) { time },
         pairsRepetitionNumber = 0,
         pairsInterval = 1,
-        easinessFactor = 2.5F
+        easinessFactor = 2.5F,
+        fromYandexDict = if (this.fromYandexDict) 1 else 0
     )
 }
 
