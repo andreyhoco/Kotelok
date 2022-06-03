@@ -19,7 +19,10 @@ class ViewAlphaAnimation {
         ).apply {
             duration = animDuration
             doOnStart { target.isVisible = true }
-            doOnEnd { onEnd?.invoke() }
+            doOnEnd {
+                onEnd?.invoke()
+                appearanceAnimations.remove(this)
+            }
         }
         appearanceAnimations.add(anim)
         anim.start()
