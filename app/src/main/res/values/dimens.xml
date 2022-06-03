@@ -7,4 +7,5 @@
     <dimen name="default_elevation">8dp</dimen>
     <dimen name="medium_corner_radius">16dp</dimen>
     <dimen name="large_corner_radius">32dp</dimen>
+    <dimen name="small_corner_radius">8dp</dimen>
 </resources>
