@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
         WordDefinitionEntity::class,
         DictionaryWordDefCrossRef::class
     ],
-    version = 2
+    version = 3
 )
 @TypeConverters(DateConverter::class)
 abstract class KotelokDatabase : RoomDatabase() {
@@ -59,6 +59,9 @@ abstract class KotelokDatabase : RoomDatabase() {
     abstract val statisticsDao: StatisticsDao
 
     companion object {
+        private const val VERSION_1 = 1
+        private const val VERSION_2 = 2
+        private const val VERSION_3 = 3
         private var database: KotelokDatabase? = null
 
         fun create(applicationContext: Context, coroutineScope: CoroutineScope): KotelokDatabase {
@@ -69,7 +72,7 @@ abstract class KotelokDatabase : RoomDatabase() {
             )
                 .fallbackToDestructiveMigration()
                 .addCallback(PrepopulateCallback(applicationContext, coroutineScope))
-                .addMigrations(Migration1To2())
+                .addMigrations(Migration1To2(), Migration2To3())
                 .build()
 
             database = instance
@@ -77,9 +80,15 @@ abstract class KotelokDatabase : RoomDatabase() {
             return instance
         }
 
-        private class Migration1To2 : Migration(1, 2) {
+        private class Migration1To2 : Migration(VERSION_1, VERSION_2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("DROP TABLE parts_of_speech")
+            }
+        }
+
+        private class Migration2To3 : Migration(VERSION_2, VERSION_3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE word_definitions ADD COLUMN from_yandex_dict INTEGER DEFAULT 0 NOT NULL")
             }
         }
 

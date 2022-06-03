@@ -30,7 +30,7 @@ interface WriterLearnableDefDao {
         """
         SELECT def_id AS id, writing, part_of_speech, main_translation,
         writer_next_repeat_date AS next_repeat_date, writer_repetition_number AS repetition_number,
-        writer_last_interval AS interval, easiness_factor
+        writer_last_interval AS interval, easiness_factor, from_yandex_dict
         FROM word_definitions AS words_d
         WHERE (words_d.def_id IN (
             SELECT cross_refs.word_def_id
@@ -48,7 +48,7 @@ interface WriterLearnableDefDao {
         """
         SELECT def_id AS id, writing, part_of_speech, main_translation,
         writer_next_repeat_date AS next_repeat_date, writer_repetition_number AS repetition_number,
-        writer_last_interval AS interval, easiness_factor
+        writer_last_interval AS interval, easiness_factor, from_yandex_dict
         FROM word_definitions
         WHERE (:repeatDateInMillis >= writer_next_repeat_date)
     """
@@ -62,7 +62,7 @@ interface WriterLearnableDefDao {
         """
         SELECT words_d.def_id AS id, writing, part_of_speech, main_translation,
         writer_next_repeat_date AS next_repeat_date, writer_repetition_number AS repetition_number,
-        writer_last_interval AS interval, easiness_factor
+        writer_last_interval AS interval, easiness_factor, from_yandex_dict
         FROM word_definitions AS words_d
         WHERE ((:repeatDateInMillis >= words_d.writer_next_repeat_date) AND (words_d.def_id IN (
             SELECT cross_refs.word_def_id
@@ -81,7 +81,7 @@ interface WriterLearnableDefDao {
         """
         SELECT def_id AS id, writing, part_of_speech, main_translation,
         writer_next_repeat_date AS next_repeat_date, writer_repetition_number AS repetition_number,
-        writer_last_interval AS interval, easiness_factor
+        writer_last_interval AS interval, easiness_factor, from_yandex_dict
         FROM word_definitions AS words_d
         """
     )
