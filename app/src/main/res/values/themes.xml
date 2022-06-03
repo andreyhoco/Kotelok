@@ -4,24 +4,33 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/light_purple_main</item>
         <item name="colorPrimaryVariant">@color/dark_purple_main</item>
-        <item name="colorOnPrimary">@color/light_gray_background_main</item>
+        <item name="colorOnPrimary">#FAFAFA</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/turquoise_main</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:textColor">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryBackground</item>
         <!-- Customize your theme here. -->
         <item name="titleColor">@color/black</item>
         <item name="subheadingColor">@color/gray</item>
+        <item name="paleColor">@color/paleGray</item>
         <item name="colorPrimaryBackground">@color/white</item>
-        <item name="actionModeBackground">@color/light_purple_main</item>
+        <item name="actionModeBackground">?attr/colorPrimaryBackground</item>
         <item name="actionModeCloseDrawable">@drawable/ic_close</item>
         <item name="donutRightColor">@color/green</item>
         <item name="donutWrongColor">@color/red</item>
 
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+        <item name="actionBarTheme">@style/Theme.Kotelok.AppBarOverlay</item>
+        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
+    </style>
+
+    <style name="Theme.Kotelok.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/light_purple_main</item>
+        <item name="colorPrimary">@color/white</item>
     </style>
 
     <style name="FieldText">
@@ -33,6 +42,7 @@
     </style>
 
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="behavior_peekHeight">512dp</item>
         <item name="backgroundTint">?attr/colorPrimaryBackground</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
     </style>
@@ -53,5 +63,23 @@
         <item name="windowSplashScreenAnimationDuration">1000</item>
         // Set the theme of the Activity that directly follows your splash screen.
         <item name="postSplashScreenTheme">@style/Theme.Kotelok</item>  # Required.
+    </style>
+
+    <style name="Widget.App.BottomNavigationView"
+        parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorOnSurface">@color/satur_gray</item>
+    </style>
+
+    <style name="FloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
+    </style>
+
+    <style name="ThemeOverlay.App.FloatingActionButton" parent="">
+        <item name="colorSecondary">@color/light_purple_main</item>
+        <item name="colorOnSecondary">@color/white</item>
     </style>
 </resources>

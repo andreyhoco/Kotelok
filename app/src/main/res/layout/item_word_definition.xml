@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="12dp"
+    android:elevation="@dimen/default_elevation"
     android:clickable="true"
     android:background="@drawable/ripple_background_definition_item"
     android:focusable="true">
@@ -78,9 +78,7 @@
         app:iconTint="?attr/colorPrimaryVariant"
         app:icon="@drawable/ic_play_speech"
         app:layout_constraintTop_toBottomOf="@id/selection_checkbox"
-        app:layout_constraintEnd_toStartOf="@id/end_border"
-
-        />
+        app:layout_constraintEnd_toStartOf="@id/end_border" />
 
     <TextView
         android:id="@+id/writing_text"

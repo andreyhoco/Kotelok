@@ -16,12 +16,13 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         app:itemIconSize="24dp"
         android:paddingVertical="4dp"
+        android:elevation="@dimen/default_elevation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        style="@style/Widget.App.BottomNavigationView"
         app:menu="@menu/bottom_navigation_menu" />
 
 </LinearLayout>

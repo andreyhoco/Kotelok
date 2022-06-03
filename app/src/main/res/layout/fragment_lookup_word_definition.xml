@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorPrimaryBackground" >
+    android:background="?attr/colorOnPrimary" >
 
     <ProgressBar
         android:id="@+id/loading_circle"
@@ -43,17 +43,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="12dp"
-            android:paddingBottom="6dp"
+            android:paddingBottom="8dp"
             android:background="@drawable/background_with_underline"
             android:elevation="4dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/yandex_dict_api_hyperlink"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:textSize="20sp"
+                android:gravity="center"
+                android:textSize="@dimen/subheading_size"
                 android:textColorLink="?attr/titleColor"
                 android:text="@string/yandex_dict_api_hyper"
                 />
@@ -76,8 +77,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/lookup_button"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="?attr/colorPrimary"
                 android:text="@string/lookup_word_button_text"/>
         </LinearLayout>
 
