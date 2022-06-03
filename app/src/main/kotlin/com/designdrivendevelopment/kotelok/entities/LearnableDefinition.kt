@@ -12,6 +12,7 @@ class LearnableDefinition(
     val mainTranslation: String,
     val otherTranslations: List<String>,
     val examples: List<ExampleOfDefinitionUse>,
+    val fromYandexDict: Boolean,
     nextRepeatDate: Date,
     repetitionNum: Int,
     lastInterval: Int,

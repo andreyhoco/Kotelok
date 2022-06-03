@@ -283,7 +283,8 @@ class DefDetailsViewModel(
             synonyms = emptyList(),
             mainTranslation = "",
             otherTranslations = emptyList(),
-            examples = emptyList()
+            examples = emptyList(),
+            fromYandexDict = false
         )
     }
 

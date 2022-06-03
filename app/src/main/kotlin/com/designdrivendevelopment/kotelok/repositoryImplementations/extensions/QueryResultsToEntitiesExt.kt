@@ -20,7 +20,8 @@ fun WordDefinitionQueryResult.toWordDefinition(): WordDefinition {
         otherTranslations = this.translations
             .map { translationEntity -> translationEntity.translation },
         examples = this.exampleEntities
-            .map { exampleEntity -> exampleEntity.toExampleOfDefinitionUse() }
+            .map { exampleEntity -> exampleEntity.toExampleOfDefinitionUse() },
+        fromYandexDict = this.fromYandexDict == 1
     )
 }
 
@@ -35,7 +36,8 @@ fun LearnableDefQueryResult.toLearnableDef(): LearnableDefinition {
         nextRepeatDate = this.nextRepeatDate,
         repetitionNum = this.repetitionNumber,
         lastInterval = this.interval,
-        eFactor = this.easinessFactor
+        eFactor = this.easinessFactor,
+        fromYandexDict = this.fromYandexDict == 1
     )
 }
 

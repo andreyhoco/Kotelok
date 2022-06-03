@@ -46,5 +46,7 @@ data class WordDefinitionEntity(
     @ColumnInfo(name = "completed_trainings_number")
     val completedTrainingsNum: Int = 0,
     @ColumnInfo(name = "successfully_trainings_number")
-    val successfullyTrainingsNum: Int = 0
+    val successfullyTrainingsNum: Int = 0,
+    @ColumnInfo(name = "from_yandex_dict", defaultValue = "0")
+    val fromYandexDict: Int = 0
 )

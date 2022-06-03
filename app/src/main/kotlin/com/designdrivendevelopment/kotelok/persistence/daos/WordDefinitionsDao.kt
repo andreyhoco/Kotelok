@@ -40,7 +40,7 @@ interface WordDefinitionsDao {
     @Query(
         """
         SELECT def_id AS id, writing, part_of_speech, language,
-        transcription, main_translation
+        transcription, main_translation, from_yandex_dict
         FROM word_definitions
         WHERE (def_id = :wordDefinitionId)
     """
@@ -51,7 +51,7 @@ interface WordDefinitionsDao {
     @Query(
         """
         SELECT def_id AS id, writing, part_of_speech, language,
-        transcription, main_translation
+        transcription, main_translation, from_yandex_dict
         FROM word_definitions
         WHERE (writing = :writing)
     """
@@ -62,7 +62,7 @@ interface WordDefinitionsDao {
     @Query(
         """
         SELECT def_id AS id, writing, part_of_speech, language,
-        transcription, main_translation
+        transcription, main_translation, from_yandex_dict
         FROM word_definitions AS words_d
         WHERE (words_d.def_id IN (
             SELECT cross_refs.word_def_id
@@ -77,7 +77,7 @@ interface WordDefinitionsDao {
     @Query(
         """
         SELECT def_id AS id, writing, part_of_speech, language,
-        transcription, main_translation
+        transcription, main_translation, from_yandex_dict
         FROM word_definitions AS words_d
         WHERE (words_d.def_id IN (
             SELECT cross_refs.word_def_id
@@ -92,7 +92,7 @@ interface WordDefinitionsDao {
     @Query(
         """
         SELECT def_id AS id, writing, part_of_speech, language,
-        transcription, main_translation
+        transcription, main_translation, from_yandex_dict
         FROM word_definitions
         """
     )

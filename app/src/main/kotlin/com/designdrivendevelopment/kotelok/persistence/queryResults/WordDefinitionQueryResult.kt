@@ -35,4 +35,6 @@ data class WordDefinitionQueryResult(
         entityColumn = "word_def_id"
     )
     val exampleEntities: List<ExampleEntity>,
+    @ColumnInfo(name = "from_yandex_dict")
+    val fromYandexDict: Int,
 )

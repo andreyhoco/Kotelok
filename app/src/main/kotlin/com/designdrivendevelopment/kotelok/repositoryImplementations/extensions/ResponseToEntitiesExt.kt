@@ -56,6 +56,7 @@ fun TranslationResponse.toWordDefinition(
         synonyms = reducedSynonyms,
         mainTranslation = translation,
         otherTranslations = reducedTranslations,
-        examples = reducedExamples
+        examples = reducedExamples,
+        fromYandexDict = true
     )
 }

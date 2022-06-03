@@ -29,7 +29,8 @@ fun TranslationResponse.getWordDefinitionEntity(
         pairsNextRepeatDate = with(Calendar.getInstance()) { time },
         pairsRepetitionNumber = 0,
         pairsInterval = 1,
-        easinessFactor = 2.5F
+        easinessFactor = 2.5F,
+        fromYandexDict = 0
     )
 }
 
