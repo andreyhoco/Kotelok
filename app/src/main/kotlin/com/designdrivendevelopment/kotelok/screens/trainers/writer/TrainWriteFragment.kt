@@ -81,8 +81,8 @@ class TrainWriteFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        alphaAnimation.endFadeAnimations()
-        alphaAnimation.endAppearanceAnimations()
+        alphaAnimation.cancelAppearanceAnimations()
+        alphaAnimation.cancelFadeAnimations()
     }
 
     override fun onDestroyView() {

@@ -97,7 +97,7 @@ class TrainFlashcardsFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         flashCardAnimations.endAnimations()
-        scoreAnimation.endAppearanceAnimations()
+        scoreAnimation.cancelAppearanceAnimations()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
