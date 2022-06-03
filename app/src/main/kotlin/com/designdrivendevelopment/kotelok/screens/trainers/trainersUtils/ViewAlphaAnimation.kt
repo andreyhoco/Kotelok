@@ -2,6 +2,7 @@ package com.designdrivendevelopment.kotelok.screens.trainers.trainersUtils
 
 import android.animation.ObjectAnimator
 import android.view.View
+import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.isVisible
@@ -19,10 +20,8 @@ class ViewAlphaAnimation {
         ).apply {
             duration = animDuration
             doOnStart { target.isVisible = true }
-            doOnEnd {
-                onEnd?.invoke()
-                appearanceAnimations.remove(this)
-            }
+            doOnCancel { onEnd?.invoke() }
+            doOnEnd { onEnd?.invoke() }
         }
         appearanceAnimations.add(anim)
         anim.start()
@@ -36,6 +35,10 @@ class ViewAlphaAnimation {
             ALPHA_TRANSPARENT
         ).apply {
             duration = animDuration
+            doOnCancel {
+                target.isVisible = false
+                onEnd?.invoke()
+            }
             doOnEnd {
                 target.isVisible = false
                 onEnd?.invoke()
@@ -52,6 +55,16 @@ class ViewAlphaAnimation {
 
     fun endFadeAnimations() {
         fadeAnimations.forEach { it.end() }
+        fadeAnimations.clear()
+    }
+
+    fun cancelAppearanceAnimations() {
+        appearanceAnimations.forEach { it.cancel() }
+        appearanceAnimations.clear()
+    }
+
+    fun cancelFadeAnimations() {
+        fadeAnimations.forEach { it.cancel() }
         fadeAnimations.clear()
     }
 
