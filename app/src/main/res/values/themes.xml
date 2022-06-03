@@ -25,6 +25,7 @@
 
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
         <item name="actionBarTheme">@style/Theme.Kotelok.AppBarOverlay</item>
+        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
     </style>
 
     <style name="Theme.Kotelok.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -71,5 +72,14 @@
 
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorOnSurface">?attr/subheadingColor</item>
+    </style>
+
+    <style name="FloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
+    </style>
+
+    <style name="ThemeOverlay.App.FloatingActionButton" parent="">
+        <item name="colorSecondary">@color/light_purple_main</item>
+        <item name="colorOnSecondary">@color/white</item>
     </style>
 </resources>
